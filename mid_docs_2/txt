@@ -1,0 +1,37 @@
+
+class Window{
+    int[3] BACKGROUND
+
+    print_hand(string hand)
+    print_held(held)
+    print_bank(int points, int total)
+}
+
+class CardButton{
+    const int[3] RED 
+    const int[3] BLACK
+    const int[3] HELD_COL
+    const int[3] REG_COL
+
+    bool held
+
+    string face
+
+    change_face(string face)
+    toggle_held()
+}
+class Guicard {
+    -change_text_col(int[3] col)
+    -change_background_col(int[3] col)
+    -change_face_text(string face)
+
+}
+
+class AdvanceButton{
+    int[3] ORANGE;
+    string button_text
+    -get_button_text(game_state) string
+}
+
+Window --* CardButton
+Window --* AdvanceButton
