@@ -6,6 +6,7 @@ from advance_button import AdvanceButton
 from card_button import CardButton
 from card_deck import random_cards
 from assessor import Assess, HandToPoints
+from fold_button import FoldButton
 
 
 class States(Enum):
@@ -38,8 +39,11 @@ tk_win = tk.StringVar()
 tk_win.set(f"win: {WIN}")
 
 
+buttons_frame = tk.Frame(root)
+buttons_frame.grid(column=1, row=0)
 
-advance_button = AdvanceButton(root)
+advance_button = AdvanceButton(buttons_frame)
+fold_button = FoldButton(buttons_frame)
 
 point_frame = tk.Frame(root)
 
@@ -66,17 +70,18 @@ def advance():
     global WIN
 
     if STATE==States.START:
+        HAND=[]
         CARDS = random_cards()
 
         for i, butt in enumerate(buttons):
             HAND.append(CARDS.pop())
-            butt.set(HAND[-1].to_special_str())
+            butt.set(HAND[-1])
             butt.toggle_held(res=False)
-
+        BET=0
         BET+=5
         POINTS-=5
 
-        tk_win.set(f"win: {WIN}")
+        tk_win.set(f"win: _")
         tk_points.set(f"points: {POINTS}")
         tk_bet.set(f"bet: {BET}")
 
@@ -85,9 +90,8 @@ def advance():
     elif STATE==States.REPLACE:
         for i, butt in enumerate(buttons):
             if not butt.held:
-                HAND.pop(i)
-                HAND.append(CARDS.pop())
-                butt.set(HAND[-1].to_special_str())
+                HAND[i]=CARDS.pop()
+                butt.set(HAND[i])
 
         BET+=5
         POINTS-=5
@@ -106,6 +110,13 @@ def advance():
         STATE = States.START
 advance()
 advance_button.callback=advance
+
+def fold():
+    global STATE
+    STATE=States.START
+    advance()
+
+fold_button.callback=fold
 
 # all widgets will be here
 # Execute Tkinter

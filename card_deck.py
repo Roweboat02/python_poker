@@ -11,8 +11,8 @@ def random_cards():
     made = 0
     out = []
     while made<21:
-        c= Card(random_suit(), random_rank()).to_str()
+        c= Card(random_suit(), random_rank()).to_special_str()
         if c not in set(out):
             out.append(c)
             made+=1
-    return [Card.from_str(i) for i in out]
+    return out

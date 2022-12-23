@@ -17,17 +17,20 @@ class Hands(Enum):
     ROYAL_FLUSH = 9
 
 
-def is_flush(cards: List[Card]) -> bool:
-    suits = {"H": 0, "C": 0, "D": 0, "S": 0}
+def is_flush(cards: List[str]) -> bool:
+    suits = ["\u2665", "\u2663", "\u2666", "\u2660"]
+    card_str = ""
     for card in cards:
-        suits[card.suit] += 1
-    return any([i > 4 for i in suits.values()])
+        card_str+=card
+
+    return any([card_str.count(k)>4 for k in suits])
 
 
-def is_straight(cards: List[Card]) -> bool:
+def is_straight(cards: List[str]) -> bool:
     x = 0
-    for card in cards:
-        x |= 1 << (card.rank_to_int() - 1)
+    ranks = [int(c[-1]) if c[-1] not in {'T', 'J', 'Q', 'K', 'A'} else {'T':10, 'J':11, 'Q':12, 'K':13, 'A':14}[c[-1]] for c in cards]
+    for r in ranks:
+        x |= 1 << (r - 1)
     checker = 0b11111
     while True:
         if x & checker == checker:
@@ -37,9 +40,9 @@ def is_straight(cards: List[Card]) -> bool:
         checker = checker << 1
 
 
-def count_cards(cards: list[Card]) -> Dict[int, int]:
+def count_cards(cards: list[str]) -> Dict[int, int]:
     counts = {k: 0 for k in range(2, 15)}
-    for i in [card.rank_to_int() for card in cards]:
+    for i in [int(c[-1]) if c[-1] not in {'T', 'J', 'Q', 'K', 'A'} else {'T':10, 'J':11, 'Q':12, 'K':13, 'A':14}[c[-1]] for c in cards]:
         counts[i] += 1
     return counts
 
@@ -73,6 +76,7 @@ def Assess(cards: list[Card]):
         return Hands.STRAIGHT
     else:
         return [Hands.HIGH_CARD,
+                Hands.PAIR,
                 Hands.TWO_PAIR,
                 Hands.THREE_OF_A_KIND,
                 Hands.FULL_HOUSE,
